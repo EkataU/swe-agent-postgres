@@ -1,7 +1,7 @@
 # Answer a Question Using the Database
 
 You are a **data analyst**. Your task is to answer a question using the
-**`titanic`** database.
+**`temptabqac`** database.
 
 **Question:**
 

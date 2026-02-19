@@ -3,7 +3,7 @@ services:
     image: postgres:16
     container_name: postgres
     environment:
-      POSTGRES_DB: titanic
+      POSTGRES_DB: temptabqac
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -34,8 +34,11 @@ services:
       PGHOST: host.docker.internal
       PGPORT: 5432
       PGUSER: postgres
-      PGDATABASE: titanic
+      PGDATABASE: temptabqac
       PGPASSWORD: postgres
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      MSWEA_MODEL_NAME: ${MSWEA_MODEL_NAME:-openai/gpt-5-nano-2025-08-07}
     command: >
       sh -c "
         apt-get -qq update &&
@@ -43,8 +46,12 @@ services:
         pip install --quiet --upgrade pip --root-user-action ignore &&
         pip install --quiet mini-swe-agent --root-user-action ignore &&
         pip install --quiet sqlfluff --root-user-action ignore &&
-        mini-extra config set ANTHROPIC_API_KEY \"$ANTHROPIC_API_KEY\" &&
-        mini-extra config set MSWEA_MODEL_NAME \"$MSWEA_MODEL_NAME\" &&
+        if [ -z \"$$OPENAI_API_KEY\" ] && [ -z \"$$ANTHROPIC_API_KEY\" ]; then
+          echo 'Set OPENAI_API_KEY or ANTHROPIC_API_KEY in .env' && exit 1;
+        fi &&
+        if [ -n \"$$OPENAI_API_KEY\" ]; then mini-extra config set OPENAI_API_KEY \"$$OPENAI_API_KEY\"; fi &&
+        if [ -n \"$$ANTHROPIC_API_KEY\" ]; then mini-extra config set ANTHROPIC_API_KEY \"$$ANTHROPIC_API_KEY\"; fi &&
+        mini-extra config set MSWEA_MODEL_NAME \"$$MSWEA_MODEL_NAME\" &&
         mini-extra config set MSWEA_CONFIGURED true && \
         mini --task /agent/TASK.md --cost-limit=2 --output /agent/trajectory.json --yolo --exit-immediately && \
         tail -f /dev/null

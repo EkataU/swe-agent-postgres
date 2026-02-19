@@ -13,8 +13,7 @@ Before running this project, ensure you have the following installed:
 - **Docker** - [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
   for your operating system
 - **Docker Compose** - Usually included with Docker Desktop (v2.0+)
-- **Anthropic API Key** - Required for the AI agent to function. Get one from
-  [Anthropic Console](https://console.anthropic.com/)
+- **OpenAI API Key** (recommended for GPT-5) or **Anthropic API Key**
 
 ### Installation
 
@@ -29,12 +28,13 @@ Before running this project, ensure you have the following installed:
 3. **Configure your environment variables** in the `.env` file:
 
    ```bash
-   ANTHROPIC_API_KEY="sk-ant-your-actual-api-key-here"
-   MSWEA_MODEL_NAME="anthropic/claude-3-5-sonnet-20241022"
+   OPENAI_API_KEY="sk-proj-your-actual-openai-key-here"
+   ANTHROPIC_API_KEY=""
+   MSWEA_MODEL_NAME="openai/gpt-5-nano-2025-08-07"
    ```
 
-   Replace `sk-ant-your-actual-api-key-here` with your actual Anthropic API key.
-   You can use any available Claude model name for `MSWEA_MODEL_NAME`.
+   Use `OPENAI_API_KEY` with `openai/gpt-5-nano-2025-08-07` (or any supported model name).
+   If you prefer Claude, set `ANTHROPIC_API_KEY` and update `MSWEA_MODEL_NAME`.
 
 ### Running the Project
 
@@ -67,20 +67,20 @@ This will launch three services:
 Connect directly to the database using psql or your preferred PostgreSQL client:
 
 ```bash
-docker exec -it postgres psql -U postgres -d titanic
+docker exec -it postgres psql -U postgres -d temptabqac
 ```
 
 Or from your local machine:
 
 ```bash
-psql -h localhost -p 5432 -U postgres -d titanic
+psql -h localhost -p 5432 -U postgres -d temptabqac
 ```
 
 Default credentials:
 
 - **Username**: `postgres`
 - **Password**: `postgres`
-- **Database**: `titanic`
+- **Database**: `temptabqac`
 
 #### Viewing Agent Output
 
@@ -139,7 +139,7 @@ The agent supports database interaction tasks, including:
 
 **Agent container fails to start:**
 
-- Ensure your `.env` file contains a valid `ANTHROPIC_API_KEY`
+- Ensure your `.env` file contains a valid `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`
 - Check that the API key has sufficient credits/permissions
 
 **Cannot access pgAdmin:**
